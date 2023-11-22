@@ -26,11 +26,11 @@ jobs:
     - name: Zip publishable webapp
       run: |
         zip -r publish.zip .
-      working-directory: ./src/Weather.API/bin/Release/netcoreapp6.0/publish
+      working-directory: ./src/Weather.API/bin/Release/net6.0/publish
 
     - name: Upload webapp as workflow artifact
       uses: actions/upload-artifact@v3
       with:
         name: webapp
-        path: ./src/Weather.API/bin/Release/netcoreapp6.0/publish/publish.zip
+        path: ./src/Weather.API/bin/Release/net6.0/publish/publish.zip
 
