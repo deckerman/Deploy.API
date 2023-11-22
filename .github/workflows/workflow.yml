@@ -1,0 +1,22 @@
+name: Build and deploy
+concurrency: toy-company
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+
+  # Build application.
+  build:
+    uses: ./.github/workflows/build.yml
+
+  # Lint Bicep file.
+  lint:
+    uses: ./.github/workflows/lint.yml

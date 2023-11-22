@@ -1,0 +1,36 @@
+name: build webapi
+
+on:
+  workflow_call:
+
+env:
+  codePath: ./src/Weather.API
+
+jobs:
+  build-application:
+    name: Build application
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0
+
+    - name: Build publishable webapp
+      run: |
+        dotnet publish --configuration Release
+      working-directory: ./src/Weather.API
+
+    - name: Zip publishable webapp
+      run: |
+        zip -r publish.zip .
+      working-directory: ./src/Weather.API/bin/Release/netcoreapp6.0/publish
+
+    - name: Upload webapp as workflow artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: webapp
+        path: ./src/Weather.API/bin/Release/netcoreapp6.0/publish/publish.zip
+
