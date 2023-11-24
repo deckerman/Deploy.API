@@ -3,6 +3,11 @@ name: build webapi
 on:
   workflow_call:
 
+env:
+    WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
+    DOTNET_VERSION: '6.0.x'             # set this to the dot net version to use    
+    CODE_PATH: ./src/Weather.API
+
 jobs:
   # Build .NET application and upload artifact to workflow
   build-application:
@@ -14,21 +19,31 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Build publishable webapp
+    - name: .NET restore
       run: |
-        dotnet publish --configuration Release
-      working-directory: ./src/Weather.API
+        dotnet restore
+      working-directory: ${{ env.CODE_PATH }}
+
+    - name: .NET build webapp
+      run: |
+        dotnet build --configuration Release
+      working-directory: ${{ env.CODE_PATH }}
+
+    - name: .NET publish webapp
+      run: |
+        dotnet publish --configuration Release -o '${{ env.WEBAPP_PACKAGE_PATH }}/myapp'
+      working-directory: ${{ env.CODE_PATH }}
 
     - name: Zip publishable webapp
       run: |
         zip -r publish.zip .
-      working-directory: ./src/Weather.API/bin/Release/net6.0/publish
+      working-directory: '${{ env.WEBAPP_PACKAGE_PATH }}/myapp'
 
     - name: Upload webapp as workflow artifact
       uses: actions/upload-artifact@v3
       with:
         name: webapp
-        path: ./src/Weather.API/Release/net6.0/publish/publish.zip
+        path: '${{ env.WEBAPP_PACKAGE_PATH }}/myapp/publish.zip'
 
