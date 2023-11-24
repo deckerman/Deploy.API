@@ -14,12 +14,15 @@ jobs:
     name: Build application
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Install .NET Core
+    - name: Install .NET Core ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Display dotnet version
+      run: dotnet --version
 
     - name: .NET restore
       run: |
@@ -36,14 +39,9 @@ jobs:
         dotnet publish --configuration Release -o './published-output'
       working-directory: ${{ env.CODE_PATH }}
 
-    - name: Zip publishable webapp
-      run: |
-        zip -r publish.zip .
-      working-directory: '${{ env.CODE_PATH }}/published-output'
-
     - name: Upload webapp as workflow artifact
       uses: actions/upload-artifact@v3
       with:
         name: webapp
-        path: '${{ env.CODE_PATH }}/published-output/publish.zip'
+        path: '${{ env.CODE_PATH }}/published-output'
 
