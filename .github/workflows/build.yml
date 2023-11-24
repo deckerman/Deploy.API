@@ -4,9 +4,10 @@ on:
   workflow_call:
 
 env:
-  codePath: ./src/Weather.API
+  API_CODE_PATH: ./src/Weather.API
 
 jobs:
+  # Build .NET application and upload artifact to workflow
   build-application:
     name: Build application
     runs-on: ubuntu-latest
@@ -21,16 +22,16 @@ jobs:
     - name: Build publishable webapp
       run: |
         dotnet publish --configuration Release
-      working-directory: ./src/Weather.API
+      working-directory: ${{ env.API_CODE_PATH }}
 
     - name: Zip publishable webapp
       run: |
         zip -r publish.zip .
-      working-directory: ./src/Weather.API/bin/Release/net6.0/publish
+      working-directory: ${{ env.API_CODE_PATH }}/bin/Release/net6.0/publish
 
     - name: Upload webapp as workflow artifact
       uses: actions/upload-artifact@v3
       with:
         name: webapp
-        path: ./src/Weather.API/bin/Release/net6.0/publish/publish.zip
+        path: ${{ env.API_CODE_PATH }}/Release/net6.0/publish/publish.zip
 
