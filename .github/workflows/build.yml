@@ -33,17 +33,17 @@ jobs:
 
     - name: .NET publish webapp
       run: |
-        dotnet publish --configuration Release -o '${{ env.WEBAPP_PACKAGE_PATH }}/myapp'
+        dotnet publish --configuration Release -o './published-output'
       working-directory: ${{ env.CODE_PATH }}
 
     - name: Zip publishable webapp
       run: |
         zip -r publish.zip .
-      working-directory: '${{ env.WEBAPP_PACKAGE_PATH }}/myapp'
+      working-directory: '${{ env.CODE_PATH }}/published-output'
 
     - name: Upload webapp as workflow artifact
       uses: actions/upload-artifact@v3
       with:
         name: webapp
-        path: '${{ env.WEBAPP_PACKAGE_PATH }}/myapp/publish.zip'
+        path: '${{ env.CODE_PATH }}/published-output/publish.zip'
 
