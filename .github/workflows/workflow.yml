@@ -1,5 +1,5 @@
 name: Build and deploy
-concurrency: toy-company
+concurrency: build-and-deploy
 
 on:
   push:

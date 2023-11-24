@@ -2,8 +2,9 @@ name: lint bicep
 
 on:
   workflow_call:
-
+    
 jobs:
+  # Check if any syntax errors in bicep deployment file 
   lint:
     name: Lint code
     runs-on: ubuntu-latest
