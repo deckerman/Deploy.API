@@ -103,4 +103,4 @@ jobs:
       name: Deploy website
       with:
         app-name: ${{ needs.deploy.outputs.appServiceAppName }}
-        package: website/publish.zip
+        package: webapp.zip
