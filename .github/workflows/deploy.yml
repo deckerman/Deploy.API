@@ -18,7 +18,7 @@ on:
         required: true
 
 jobs:
-  validate:
+  validate-preflight:
     environment: ${{ inputs.environmentType }}
     runs-on: ubuntu-latest
     steps:
@@ -39,8 +39,20 @@ jobs:
           environmentType=${{ inputs.environmentType }}
         deploymentMode: Validate
 
+  validate-whatif:
+    needs: validate-preflight
+    uses: azure/arm-deploy@v1
+    name: Run what-if
+    with:
+      failOnStdErr: false
+      resourceGroupName: ${{ inputs.resourceGroupName }}
+      template: ./deploy/main.bicep
+      parameters: >
+        environmentType=${{ inputs.environmentType }}
+      additionalArguments: --what-if
+
   deploy:
-    needs: validate
+    needs: validate-whatif
     environment: ${{ inputs.environmentType }}
     runs-on: ubuntu-latest
     outputs:
