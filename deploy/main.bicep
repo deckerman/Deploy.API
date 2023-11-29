@@ -1,12 +1,17 @@
 @description('The location into which your Azure resources should be deployed.')
 param location string = resourceGroup().location
 
-@description('Select the type of environment you want to provision. Allowed values are Production and Test.')
+@description('Select the type of environment you want to provision. Allowed values are Production and Dev.')
 @allowed([
   'Production'
-  'Test'
+  'Dev'
 ])
 param environmentType string
+
+var tags = {
+  environment: 'd'
+  application: 'test-api'
+}
 
 
 // Define the names for resources.
@@ -35,7 +40,7 @@ var environmentConfigurationMap = {
       }
     }
   }
-  Test: {
+  Dev: {
     appServicePlan: {
       sku: {
         name: 'F1'
@@ -59,11 +64,13 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
   location: location
   sku: environmentConfigurationMap[environmentType].appServicePlan.sku
+  tags: tags
 }
 
 resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
   name: appServiceAppName
   location: location
+  tags: tags
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
